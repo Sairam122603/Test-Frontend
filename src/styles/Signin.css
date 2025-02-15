@@ -1,0 +1,206 @@
+/*  */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #3b82f6, #10b981);
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 50%;
+    max-width: 1200px;
+    /* gap: 20px; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+    background-color: #3547614D;
+    
+}
+.login-container{
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+}
+
+.left-section {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #26344899;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.right-section {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    color: #f1f1f1;
+}
+
+
+.card {
+    /* background: white; */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 350px;
+}
+.header {
+    font-size: 12px;
+    color: #f1f1f1;
+    /* margin-bottom: 20px; */
+    position:absolute;
+    top:0;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    /* padding-left: 200px; */
+    background-color:#00000033;
+    width: 100%;
+}
+.input-field {
+    width: 80%;
+    padding: 10px;
+    margin-top: 10px;
+    /* border: 1px solid #ccc; */
+    /* border-radius: 5px; */
+    background-color: #0000004D;
+    color:#f1f1f1;
+    height: 54.08773422241211;
+    top: 300px;
+    left: 384px;
+    border-radius: 12px;
+    
+}
+.title{
+    font-size: 15px;
+    color: #f1f1f1;
+    
+}
+
+.btn {
+    margin-top: 15px;
+    width: 50%;
+    padding: 10px;
+    background: #1ab13180;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 200;
+height: 30;
+top: 405px;
+left: 453px;
+border-radius: 30px;
+box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+transition: all 0.3s ease-in-out;
+
+}
+
+.btn:hover {
+    background: #07c98b;
+    box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.footer {
+    text-align: center;
+    color: #f1f1f1;
+    position: absolute;
+    bottom: 0;
+    /* padding-left: 200px; */
+    font-size: 13px;
+    color: #f1f1f1;
+    /* margin-bottom: 20px; */
+    /* position:absolute; */
+    /* top:0; */
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    /* padding-left: 200px; */
+    background-color:#00000033;
+    width: 100%;
+}
+.resend-otp{
+    font-family: Mulish;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.07em; /* 7% letter spacing */
+    color: #999898;
+    margin-left: 10px;
+
+
+}
+.timer{
+    font-family: Mulish;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.07em;
+    color: #FFFFFF;
+    margin-right: 40px;
+
+}
+.OTP{
+    font-family: Mulish;
+font-weight: 700;
+box-shadow: 3px 3px 3px 0px #221E1E47;
+
+box-shadow: 0px 3px 3px 0px #FFFDFD40 inset;
+border-radius: 10px;
+font-size: 14px;
+background: #0000004D;
+color: #f1f1f1;
+width: 80;
+}
+.resend-time-container {
+    display: flex;
+    justify-content: space-between; /* Push elements to both ends */
+    align-items: center; /* Align items vertically */
+    width: 100%; /* Ensure it takes full width */
+    padding: 10px 20px; /* Add some padding */
+}
+
+.resend {
+    font-family: Mulish;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.07em; /* 7% letter spacing */
+    color: #FFFFFF;
+    margin-left: 10px;
+}
+
+.time {
+    font-family: Mulish;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.07em;
+    color: #999898;
+    margin-right: 40px;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        text-align: center;
+    }
+}
