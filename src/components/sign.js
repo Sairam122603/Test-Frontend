@@ -1,40 +1,45 @@
 import React, { useState } from 'react';
-import '../styles/Signin.css';
 import { useNavigate } from 'react-router-dom';
+import '../styles/Signin.css';
 
-const Sign = () => {
+const SignIn = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [isSending, setIsSending] = useState(false);
 
-    const handleSignIn = async () => {
+    const handleSendOTP = async () => {
         if (!email) {
-            alert("Please enter your email.");
+            setMessage("⚠️ Please enter your email.");
             return;
         }
 
-        setLoading(true);
+        setIsSending(true);
+        setMessage('');
+
         try {
-            const response = await fetch("https://test-backend-8z4m.onrender.com/send-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+            const response = await fetch('http://localhost:3000/api/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
             });
 
             const data = await response.json();
+            console.log("📩 OTP response:", data);
 
             if (response.ok) {
                 localStorage.setItem("email", email);
-                alert("OTP has been sent to your email.");
-                navigate("/validotp");
+                setMessage("✅ OTP sent! Check your email.");
+                navigate('/validotp');  // Navigate to OTP page
             } else {
-                alert(data.message || "Failed to send OTP. Please try again.");
+                setMessage(`❌ ${data.message}`);
             }
         } catch (error) {
-            console.error("Error sending OTP:", error);
-            alert("Error sending OTP. Check your internet connection.");
+            console.error("❌ Error sending OTP:", error);
+            setMessage("⚠️ Error connecting to server.");
+        } finally {
+            setIsSending(false);
         }
-        setLoading(false);
     };
 
     return (
@@ -47,15 +52,16 @@ const Sign = () => {
                     <div className="left-section">
                         <div className="card">
                             <h2 className='title'>Sign In</h2>
+                            {message && <p className="message">{message}</p>}
                             <input 
                                 type="email" 
-                                placeholder="E-mail" 
+                                placeholder="Enter your email" 
                                 className="input-field" 
                                 value={email} 
                                 onChange={(e) => setEmail(e.target.value)}
                             />
-                            <button className="btn" onClick={handleSignIn} disabled={loading}>
-                                {loading ? "Sending..." : "Send OTP"}
+                            <button className="btn" onClick={handleSendOTP} disabled={isSending}>
+                                {isSending ? "Sending..." : "Send OTP"}
                             </button>
                         </div>
                     </div>
@@ -73,4 +79,4 @@ const Sign = () => {
     );
 };
 
-export default Sign;
+export default SignIn;

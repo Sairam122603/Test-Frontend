@@ -1,85 +1,86 @@
-import React, { useState } from 'react';
-import '../styles/Signin.css';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const VALIDOTP = () => {
+const ValidOTP = () => {
     const navigate = useNavigate();
     const [otp, setOtp] = useState('');
-    const [loading, setLoading] = useState(false);
-    const email = localStorage.getItem("email");
-console.log("Retrieved email for OTP validation:", email);
+    const [message, setMessage] = useState('');
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [email, setEmail] = useState('');
 
+    useEffect(() => {
+        const storedEmail = localStorage.getItem("email");
+        if (!storedEmail) {
+            setMessage("⚠️ No email found. Please sign in again.");
+        }
+        setEmail(storedEmail);
+    }, []);
 
-    const handleValidateOTP = async () => {
-        if (!otp.trim()) {
-            alert("Please enter the OTP.");
+    const handleVerifyOTP = async () => {
+        if (!otp) {
+            setMessage("⚠️ Please enter the OTP.");
             return;
         }
 
-        setLoading(true);
+        if (!email) {
+            setMessage("⚠️ Email not found. Try signing in again.");
+            return;
+        }
+
+        setIsVerifying(true);
+        setMessage('');
+
         try {
-            const response = await fetch("https://test-backend-8z4m.onrender.com/validate-otp", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, otp }),
+            console.log("🔹 Sending OTP verification request...");
+            const response = await fetch('http://localhost:3000/api/validate-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp })
             });
 
-            const data = await response.json(); // Parse JSON response
+            console.log("🔹 Response received:", response);
+            const data = await response.json();
 
             if (response.ok) {
-                alert("✅ OTP Verified Successfully!");
-                navigate("/dashboard"); // Redirect to Dashboard
+                console.log("✅ OTP verified successfully!", data);
+                setMessage("✅ OTP verified successfully!");
+                navigate('/dashboard'); // Redirect
             } else {
-                alert(data.message || "❌ Invalid OTP. Please try again.");
-                navigate("/resendotp");
+                console.log("❌ OTP verification failed:", data);
+                setMessage(`❌ ${data.message}`);
             }
         } catch (error) {
-            alert("⚠️ Error verifying OTP. Please check your internet connection.");
+            console.error("❌ OTP Verification Error:", error);
+            setMessage("⚠️ Error verifying OTP. Please check your internet connection.");
+        } finally {
+            setIsVerifying(false);
         }
-        setLoading(false);
     };
 
     return (
         <>
-            {/* Header */}
             <div className="header">
-                <h2>Analytics Dashboard</h2>
+                <h2>OTP Verification</h2>
             </div>
-
-            {/* OTP Input Section */}
-            <div className="login-container">
-                <div className="container">
-                    <div className="left-section">
-                        <div className="card">
-                            <h2 className='title'>Enter OTP sent to {email}</h2>
-                            <input 
-                                type="text" 
-                                placeholder="Enter OTP" 
-                                className="input-field" 
-                                value={otp} 
-                                onChange={(e) => setOtp(e.target.value)}
-                            />
-                            <button className="btn" onClick={handleValidateOTP} disabled={loading}>
-                                {loading ? "Validating..." : "Validate OTP"}
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Dashboard Information */}
-                    <div className="right-section">
-                        <div className="text-center">
-                            <h2>Web Application with Analytics Dashboard</h2>
-                        </div>
-                    </div>
+            <div className="otp-container">
+                <div className="card">
+                    <h2>Enter OTP sent to</h2>
+                    <p>{email || "⚠️ Email not found!"}</p>
+                    {message && <p className="message">{message}</p>}
+                    <input
+                        type="text"
+                        placeholder="Enter OTP"
+                        className="input-field"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                    />
+                    <button className="btn" onClick={handleVerifyOTP} disabled={isVerifying}>
+                        {isVerifying ? "Validating..." : "Validate OTP"}
+                    </button>
                 </div>
-            </div>
-
-            {/* Footer */}
-            <div className="footer">
-                <h6>© 2025, Greendzine Technologies Pvt. Ltd. All Rights Reserved.</h6>
             </div>
         </>
     );
 };
 
-export default VALIDOTP;
+export default ValidOTP;

@@ -1,101 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import '../styles/Signin.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 
 const ResendOTP = () => {
-    const navigate = useNavigate();
-    const [otp, setOtp] = useState('');
-    const [isResendDisabled, setIsResendDisabled] = useState(false);
-    const [timer, setTimer] = useState(30);
-    const [isOtpInvalid, setIsOtpInvalid] = useState(false);
-    
-    useEffect(() => {
-        let countdown;
-        if (isResendDisabled) {
-            countdown = setInterval(() => {
-                setTimer(prev => {
-                    if (prev === 1) {
-                        clearInterval(countdown);
-                        setIsResendDisabled(false);
-                        return 30;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(countdown);
-    }, [isResendDisabled]);
+    const [message, setMessage] = useState('');
+    const [isResending, setIsResending] = useState(false);
+
+    const email = localStorage.getItem("email");
 
     const handleResendOTP = async () => {
-        setIsResendDisabled(true);
-        setTimer(30);
+        if (!email) {
+            setMessage("⚠️ No email found. Please sign in again.");
+            return;
+        }
+
+        setIsResending(true);
+        setMessage('');
+
         try {
-            const response = await fetch('/api/resend-otp', {
+            const response = await fetch('http://localhost:3000/api/resend-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: 'user@example.com' }) // Replace with actual user email
+                body: JSON.stringify({ email })
             });
+
+            const data = await response.json();
+            console.log("🔄 Resend OTP Response:", data);
+
             if (response.ok) {
-                console.log("OTP resent successfully!");
+                setMessage("✅ OTP resent successfully! Check your email.");
             } else {
-                console.error("Failed to resend OTP");
+                setMessage(`❌ ${data.message}`);
             }
         } catch (error) {
-            console.error("Error resending OTP:", error);
-        }
-        setIsOtpInvalid(false);
-    };
-
-    const handleValidateOTP = () => {
-        const correctOtp = "123456"; // Replace with actual OTP validation logic
-        if (otp === correctOtp) {
-            navigate('/dashboard');
-        } else {
-            setIsOtpInvalid(true);
-            setIsResendDisabled(false);
+            console.error("❌ Resend OTP Error:", error);
+            setMessage("⚠️ Error resending OTP. Please try again.");
+        } finally {
+            setIsResending(false);
         }
     };
 
     return (
         <>
             <div className="header">
-                <h2>Analytics Dashboard</h2>
+                <h2>Resend OTP</h2>
             </div>
-            <div className="login-container">
-                <div className="container">
-                    <div className="left-section">
-                        <div className="card">
-                            <h2 className='title'>Enter OTP sent to email</h2>
-                            <input 
-                                type="text" 
-                                placeholder="OTP" 
-                                className="input-field" 
-                                value={otp} 
-                                onChange={(e) => setOtp(e.target.value)} 
-                            />
-                            {isOtpInvalid && <p className="error">Invalid OTP, please try again.</p>}
-                            <div className="resend-time-container">
-                                <button 
-                                    className="resend" 
-                                    onClick={handleResendOTP} 
-                                    disabled={isResendDisabled}
-                                >
-                                    Re-send OTP
-                                </button>
-                                <span className="time">{isResendDisabled ? `00:${timer < 10 ? `0${timer}` : timer}` : ""}</span>
-                            </div>
-                            <button className="btn" onClick={handleValidateOTP}>Validate</button>
-                        </div>
-                    </div>
-                    <div className="right-section">
-                        <div className="text-center">
-                            <h2>Web Application with Analytics Dashboard</h2>
-                        </div>
-                    </div>
+            <div className="otp-container">
+                <div className="card">
+                    <h2>Resend OTP to</h2>
+                    <p>{email}</p>
+                    {message && <p className="message">{message}</p>}
+                    <button className="btn" onClick={handleResendOTP} disabled={isResending}>
+                        {isResending ? "Resending..." : "Resend OTP"}
+                    </button>
                 </div>
-            </div>
-            <div className="footer">
-                <h6>© 2025, Greendzine Technologies Pvt. Ltd. All Rights Reserved.</h6>
             </div>
         </>
     );
